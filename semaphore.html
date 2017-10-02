@@ -1,0 +1,122 @@
+<!--
+  Copyright 2017 Tyler Eastman.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="semaphore-config">
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="config.name"></span></label>
+    <input type="text" id="node-config-input-name" placeholder="Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-capacity"><i class="fa fa-server"></i> <span data-i18n="config.capacity"></span></label>
+    <input type="text" id="node-config-input-capacity" placeholder="1" style="width:80px" />
+  </div>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('semaphore-config', {
+        category: 'config',
+        defaults: {
+            name: { value: '', required:true },
+            capacity: { value: 1, required:true, validate:RED.validators.number()}
+        },
+        label: function() {
+            return this.name;
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="semaphore-take">
+  <div class="form-row">
+    <label for="node-input-config"><i class="fa fa-server"></i> <span data-i18n="semaphore.semaphore"></span></label>
+    <input type="text" id="node-input-config" placeholder="Semaphore" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="semaphore.name"></span></label>
+    <input type="text" id="node-input-name" placeholder="semaphore take" />
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="semaphore-take">
+    <p>Limits simultaneous actions through use of a semaphore</p>
+    <h3>Details</h3>
+    <p>Each "semaphore take" node should be paired with a "semaphore leave" node.</p>
+    <p>Additionally it's a good idea to use a node-red catch node that will call a "semaphore leave" in the event that any
+    node between the take and leave should throw an error.</p>
+    <p>Use with care, it can be easy to set yourself up in a dead lock situation.</p>
+    <h3>References</h3>
+    <ul>
+        <li><a href="https://github.com/teastman/node-red-contrib-semaphore">GitHub</a> - node-red-contrib-semaphore repository</li>
+    </ul>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('semaphore-take', {
+        category: 'function',
+        defaults: {
+            config: {type: 'semaphore-config', required: true},
+            name: {value: ''}
+        },
+        inputs: 1,
+        outputs: 1,
+        color: "#A6BBCF",
+        icon: "semaphore_take.png",
+        label: function () {
+            return this.name || 'semaphore take';
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="semaphore-leave">
+  <div class="form-row">
+    <label for="node-input-config"><i class="fa fa-server"></i> <span data-i18n="semaphore.semaphore"></span></label>
+    <input type="text" id="node-input-config" placeholder="Semaphore">
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="semaphore.name"></span></label>
+    <input type="text" id="node-input-name" placeholder="semaphore leave">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="semaphore-leave">
+    <p>Limits simultaneous actions through use of a semaphore</p>
+    <h3>Details</h3>
+    <p>Each "semaphore take" node should be paired with a "semaphore leave" node.</p>
+    <p>Additionally it's a good idea to use a node-red catch node that will call a "semaphore leave" in the event that any
+    node between the take and leave should throw an error.</p>
+    <p>Use with care, it can be easy to set yourself up in a dead lock situation.</p>
+    <h3>References</h3>
+    <ul>
+        <li><a href="https://github.com/teastman/node-red-contrib-semaphore">GitHub</a> - node-red-contrib-semaphore repository</li>
+    </ul>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('semaphore-leave', {
+        category: 'function',
+        defaults: {
+            config: {type: 'semaphore-config', required: true},
+            name: {value: ''}
+        },
+        inputs: 1,
+        outputs: 1,
+        color: "#A6BBCF",
+        icon: "semaphore_leave.png",
+        label: function () {
+            return this.name || 'semaphore leave';
+        }
+    });
+</script>
+

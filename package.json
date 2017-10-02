@@ -1,0 +1,32 @@
+{
+  "name": "node-red-contrib-semaphore",
+  "version": "1.0.0",
+  "description": "A Node-RED node for semaphores.",
+  "dependencies": {
+    "semaphore": "1.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/teastman/node-red-contrib-semaphore"
+  },
+  "license": "Apache",
+  "keywords": [
+    "node-red",
+    "semaphore"
+  ],
+  "node-red": {
+    "nodes": {
+      "semaphore": "semaphore.js"
+    }
+  },
+  "author": {
+    "name": "Tyler Eastman",
+    "email": "tyler.eastman@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "teastman",
+      "email": "tyler.eastman@gmail.com"
+    }
+  ]
+}

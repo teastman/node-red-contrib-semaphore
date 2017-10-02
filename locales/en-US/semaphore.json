@@ -1,0 +1,11 @@
+{
+  "config": {
+    "capacity": "Capacity",
+    "name": "Name"
+  },
+  "semaphore": {
+    "semaphore": "Semaphore",
+    "available": "Available Output",
+    "name": "Name"
+  }
+}
