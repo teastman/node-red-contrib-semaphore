@@ -21,8 +21,24 @@ module.exports = function (RED) {
 
     function SemaphoreConfig(n) {
         RED.nodes.createNode(this, n);
-        this.capacity = n.capacity || 1;
-        this.semaphore = semaphore(this.capacity);
+        const node = this;
+
+        node.name = n.name;
+        node.capacity = n.capacity || 1;
+        node.semaphore = semaphore(node.capacity);
+        node.observers = [];
+
+        node.subscribe = function (fn) {
+            node.observers.push(fn);
+        };
+
+        node.unsubscribe = function (fn) {
+            node.observers = node.observers.filter((observer) => observer !== fn);
+        };
+
+        node.broadcast = function () {
+            node.observers.forEach((observer) => observer(node));
+        };
     }
 
     RED.nodes.registerType('semaphore-config', SemaphoreConfig);
@@ -30,24 +46,43 @@ module.exports = function (RED) {
     function SemTakeNode(n) {
         RED.nodes.createNode(this, n);
         const node = this;
-        const sem = RED.nodes.getNode(n.config).semaphore;
+        const config = RED.nodes.getNode(n.config);
+        const sem = config.semaphore;
+
+        const updateStatus = function (config) {
+            const capacity = config.semaphore.capacity;
+            const size = config.semaphore.current + config.semaphore.queue.length;
+            const fill = (size > capacity) ? "yellow" : "grey";
+            node.status({fill: fill, shape: "dot", text: config.name + ": " + size + " / " + capacity});
+            if (size === 0)
+                node.status({});
+        };
+        config.subscribe(updateStatus);
 
         node.on('input', (msg) => {
             sem.take(() => {
                 node.send(msg);
             });
+            config.broadcast();
+        });
+
+        node.on('close', ()=> {
+            config.unsubscribe(updateStatus);
+            node.status({});
         });
     }
-    
+
     RED.nodes.registerType('semaphore-take', SemTakeNode);
 
     function SemLeaveNode(n) {
         RED.nodes.createNode(this, n);
         const node = this;
-        const sem = RED.nodes.getNode(n.config).semaphore;
+        const config = RED.nodes.getNode(n.config);
+        const sem = config.semaphore;
 
         node.on('input', (msg) => {
             sem.leave();
+            config.broadcast();
             node.send(msg);
         });
     }

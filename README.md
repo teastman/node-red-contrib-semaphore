@@ -13,16 +13,15 @@ Usage
 
 This node allows you to limit simultaneous usage of resources.
 
-Each "semaphore take" node should be paired with a "semaphore leave" node.
+`semaphore take` node will queue on available capacity of the underlying semaphore.  The take node will display as it's
+status the name, current queue count, and total capacity of the underlying semaphore.
 
-Additionally it's a good idea to use a node-red catch node that will call a "semaphore leave" in the event that any
+`semaphore leave` node will free up an available spot for the queue to process the next task.
+
+It's a good idea to use a node-red catch node that will call a `semaphore leave` in the event that any
 node between the take and leave should throw an error.
 
 Use with care, it can be easy to set yourself up in a dead lock situation.
-
-**Config**
-
-Add a semaphore node and setup a semaphore config.  Each semaphore config may have a single set capacity.
 
 Acknowledgements
 ----------------

@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-semaphore",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Node-RED node for semaphores.",
   "dependencies": {
     "semaphore": "1.x"
